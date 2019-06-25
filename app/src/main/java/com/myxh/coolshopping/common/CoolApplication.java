@@ -52,7 +52,7 @@ public class CoolApplication extends ZApplication {
         //Bmob初始化
      //   Bmob.initialize(this, AppConstant.BMOB_AppID);
         //热更新
-     //   initAndfix();
+        initAndfix();
         //Bmob支付初始化
       //  initPay();
 

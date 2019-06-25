@@ -67,7 +67,7 @@ public class BoxSendLineStoreActivity extends BaseActivity implements View.OnCli
         lineCode=getIntent().getExtras().getString("lineCode");
         lineName=getIntent().getExtras().getString("lineName");
 
-        tvTitle.setText(lineName);
+        tvTitle.setText("发运出库-"+lineName);
 
         LineRequest lineRequest=new LineRequest();
         lineRequest.setLineCode(lineCode);

@@ -96,7 +96,7 @@ public class BoxCheckRecyleNumActivity extends BaseActivity implements View.OnCl
 
         tvStoreName.setText(storeName);
 
-        tvTitle.setText(storeName);
+        tvTitle.setText("回收入库-"+storeName);
 
         BoxCheckInfoRequest request=new BoxCheckInfoRequest();
         request.setBoxTypeCode(boxTypeCode);

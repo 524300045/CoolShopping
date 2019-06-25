@@ -240,14 +240,14 @@ public class HomeFragment extends BaseFragment implements HttpListener<String> {
     private void initTitlebar(View view) {
         LinearLayout cityLayout = (LinearLayout) view.findViewById(R.id.titleBar_location_lay);
         mCityName = (TextView) view.findViewById(R.id.titleBar_city_name);
-        cityLayout.setOnClickListener(new View.OnClickListener() {
+      /*  cityLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(),CityActivity.class);
                 intent.putExtra(AppConstant.KEY_CITY,mCityName.getText().toString());
                 startActivityForResult(intent,CITY_REQUEST_CODE);
             }
-        });
+        });*/
 
       /*  ImageView scanQR = (ImageView) view.findViewById(R.id.titleBar_scan_img);
         scanQR.setOnClickListener(new View.OnClickListener() {

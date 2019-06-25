@@ -100,16 +100,13 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        switch (view.getId())
-        {
-            case  R.id.btnExit:
-                AppManager.getInstance().finishAllActivity();
-                System.exit(0);
-                break;
 
-        }
-       /* switch (view.getId()) {
-            case R.id.more_item_share_layout:
+       switch (view.getId()) {
+           case  R.id.btnExit:
+               AppManager.getInstance().finishAllActivity();
+               System.exit(0);
+               break;
+            /*case R.id.more_item_share_layout:
                 break;
             case R.id.more_item_clear_cache_layout:
                 DataClearUtil.cleanAllCache(getActivity());
@@ -120,7 +117,7 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
                 openAppMarket("com.netease.edu.study");
                 break;
             case R.id.more_item_feedback_layout:
-                break;
+                break;*/
             case R.id.more_item_contact_kefu_layout:
                 Intent intent = new Intent();
                 intent.setAction(Intent.ACTION_CALL);
@@ -132,14 +129,14 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.more_item_about_layout:
                 break;
-        }*/
+        }
     }
 
     /**
      * 打开应用商店
      * @param packageName
      */
-   /* private void openAppMarket(String packageName) {
+    private void openAppMarket(String packageName) {
         try {
             String str = "market://detail?id=" + packageName;
             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -154,5 +151,5 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
             intent.setData(Uri.parse(url));
             startActivity(intent);
         }
-    }*/
+    }
 }

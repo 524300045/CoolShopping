@@ -77,7 +77,7 @@ public class BoxTypeSendListActivity extends BaseActivity implements View.OnClic
         lineCode=getIntent().getExtras().getString("lineCode");
         lineName=getIntent().getExtras().getString("lineName");
 
-        tvTitle.setText(storeName);
+        tvTitle.setText("发运出库-"+storeName);
 
         BoxTypeRequest request=new BoxTypeRequest();
         request.setCustomerCode(customerCode);

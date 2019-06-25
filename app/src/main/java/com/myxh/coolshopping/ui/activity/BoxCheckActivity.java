@@ -73,7 +73,7 @@ public class BoxCheckActivity extends BaseActivity implements View.OnClickListen
         customerCode=getIntent().getExtras().getString("customerCode");
         customerName=getIntent().getExtras().getString("customerName");
 
-        tvTitle.setText(storeName);
+        tvTitle.setText("门店清点-"+storeName);
 
         BoxTypeRequest request=new BoxTypeRequest();
         request.setCustomerCode(customerCode);
@@ -126,6 +126,8 @@ public class BoxCheckActivity extends BaseActivity implements View.OnClickListen
         if (resultCode==-1)
         {
             BoxTypeRequest request=new BoxTypeRequest();
+            request.setCustomerCode(customerCode);
+            request.setStoredCode(storeCode);
             Gson gson = new Gson();
             String json=gson.toJson(request);
 

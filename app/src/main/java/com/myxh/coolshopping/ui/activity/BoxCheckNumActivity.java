@@ -102,7 +102,7 @@ public class BoxCheckNumActivity extends BaseActivity implements View.OnClickLis
         tvBoxTypeCode.setText(boxTypeCode);
         tvBoxTypeName.setText(boxTypeName);
 
-        tvTitle.setText(storeName);
+        tvTitle.setText("门店清点-"+storeName);
 
         BoxCheckInfoRequest request=new BoxCheckInfoRequest();
         request.setBoxTypeCode(boxTypeCode);
@@ -211,7 +211,15 @@ public class BoxCheckNumActivity extends BaseActivity implements View.OnClickLis
 
                     tvBoxTypeCode.setText(boxCheckInfoResponse.getResult().getBoxTypeCode());
                     tvBoxTypeName.setText(boxCheckInfoResponse.getResult().getBoxTypeName());
-                    etNum.setText(String.valueOf(boxCheckInfoResponse.getResult().getCheckNum().intValue()));
+                    if(boxCheckInfoResponse.getResult().getCheckNum().intValue()==0)
+                    {
+                        etNum.setText("");
+                    }
+                    else
+                    {
+                        etNum.setText(String.valueOf(boxCheckInfoResponse.getResult().getCheckNum().intValue()));
+                    }
+
 
                 }
                 else

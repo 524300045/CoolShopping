@@ -117,7 +117,7 @@ public class BoxSendListActivity extends BaseActivity implements View.OnClickLis
         lineCode=getIntent().getExtras().getString("lineCode");
         lineName=getIntent().getExtras().getString("lineName");
 
-        tvTitle.setText(boxTypeName);
+        tvTitle.setText("发运出库-"+boxTypeName);
 
         BoxOutDetailQueryRequest boxOutDetailQueryRequest=new BoxOutDetailQueryRequest();
         boxOutDetailQueryRequest.setStoredCode(storeCode);

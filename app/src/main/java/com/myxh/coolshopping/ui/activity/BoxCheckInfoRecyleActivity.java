@@ -128,13 +128,21 @@ public class BoxCheckInfoRecyleActivity extends BaseActivity implements View.OnC
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode==-1)
         {
-            BoxTypeRequest request=new BoxTypeRequest();
+         /*   BoxTypeRequest request=new BoxTypeRequest();
             Gson gson = new Gson();
             String json=gson.toJson(request);
 
             Request<String> boxTypeRequest = NoHttp.createStringRequest(AppConstant.BASE_URL+"/boxType/getAllBoxType",RequestMethod.POST);
             boxTypeRequest.setDefineRequestBodyForJson(json);
+*/
+            BoxCheckInfoRequest request=new BoxCheckInfoRequest();
+            request.setLineCode(lineCode);
 
+            Gson gson = new Gson();
+            String json=gson.toJson(request);
+
+            Request<String> boxTypeRequest = NoHttp.createStringRequest(AppConstant.BASE_URL+"/boxCheckInfo/getBoxCheckInfoByLine",RequestMethod.POST);
+            boxTypeRequest.setDefineRequestBodyForJson(json);
 
             CallServer.getInstance().add(BoxCheckInfoRecyleActivity.this, Box_Recyle_REQUEST, boxTypeRequest, this, true, true);
         }

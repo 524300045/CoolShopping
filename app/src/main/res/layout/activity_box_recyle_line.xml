@@ -17,7 +17,7 @@
             style="@style/base_textView_style"
             android:layout_centerInParent="true"
             android:gravity="center_vertical"
-            android:text="发运线路"
+            android:text="回收入库-发运线路"
             android:textSize="@dimen/login_titleBar_login_size"
             android:textColor="@color/textColor_32"/>
         <TextView

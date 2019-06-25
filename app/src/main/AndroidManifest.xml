@@ -165,6 +165,7 @@
         <activity android:name=".ui.activity.BoxCheckActivity"></activity>
         <activity android:name=".ui.activity.BoxCheckNumActivity"></activity>
         <activity android:name=".ui.activity.BoxRecyleLineActivity"></activity>
+        <activity android:name=".ui.activity.BoxCheckRecyleNumActivity"></activity>
         <activity android:name=".ui.activity.BoxCheckInfoRecyleActivity"></activity>
         <activity android:name=".ui.activity.BoxSendLineActivity"></activity>
         <activity android:name=".ui.activity.BoxSendLineStoreActivity"></activity>
@@ -172,6 +173,8 @@
         <activity android:name=".ui.activity.BoxSendListActivity"></activity>
         <activity android:name=".ui.activity.BoxSendNumActivity"></activity>
         <activity android:name=".ui.activity.BoxTypeSendListActivity"></activity>
+
+
     </application>
 
 </manifest>
