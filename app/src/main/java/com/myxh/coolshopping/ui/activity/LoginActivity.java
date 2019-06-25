@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -19,21 +21,40 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.mob.tools.utils.UIHandler;
 import com.myxh.coolshopping.R;
+import com.myxh.coolshopping.common.AppConstant;
 import com.myxh.coolshopping.common.BmobManager;
+import com.myxh.coolshopping.entity.WareHouse;
 import com.myxh.coolshopping.listener.BmobLoginCallback;
 import com.myxh.coolshopping.listener.BmobMsgSendCallback;
 import com.myxh.coolshopping.listener.TextInputWatcher;
+import com.myxh.coolshopping.network.CallServer;
+import com.myxh.coolshopping.network.HttpListener;
+import com.myxh.coolshopping.network.HttpResponseListener;
+import com.myxh.coolshopping.request.LoginRequest;
+import com.myxh.coolshopping.request.WareRequest;
+import com.myxh.coolshopping.response.UserResponse;
+import com.myxh.coolshopping.response.WareResponse;
 import com.myxh.coolshopping.ui.base.BaseActivity;
+import com.myxh.coolshopping.ui.fragment.HomeFragment;
 import com.myxh.coolshopping.util.LoginHelperUtil;
 import com.myxh.coolshopping.util.ToastUtil;
+import com.yolanda.nohttp.Logger;
+import com.yolanda.nohttp.NoHttp;
+import com.yolanda.nohttp.RequestMethod;
+import com.yolanda.nohttp.rest.Request;
+import com.yolanda.nohttp.rest.Response;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -44,11 +65,102 @@ import cn.sharesdk.framework.ShareSDK;
 import cn.sharesdk.sina.weibo.SinaWeibo;
 import cn.sharesdk.tencent.qq.QQ;
 import cn.sharesdk.wechat.friends.Wechat;
+import com.yolanda.nohttp.rest.SimpleResponseListener;
 
-public class LoginActivity extends BaseActivity implements View.OnClickListener, PlatformActionListener, Handler.Callback {
+public class LoginActivity extends BaseActivity implements View.OnClickListener,HttpListener<String>, PlatformActionListener, Handler.Callback {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
     public static final int LOGIN_RESULT_CODE = 1002;
+
+    private Spinner mloginWareSpinner;
+
+    private ArrayAdapter<WareHouse> arrWareAdapter;
+
+    private  String wareCode;
+
+    private String wareName;
+
+    private String serviceUrl;
+
+    private List<WareHouse> wareList;
+
+    @Override
+    public void onSucceed(int what, Response<String> response) {
+
+        Gson gson = new Gson();
+        switch (what){
+            case  1:
+                Logger.i(response.get());
+
+                UserResponse userInfo = gson.fromJson(response.get(),UserResponse.class);
+                if(userInfo!=null&&userInfo.getCode().equals("200"))
+                {
+                    ToastUtil.show(LoginActivity.this,R.string.login_success);
+
+                    AppConstant.BASE_URL=serviceUrl;
+                    AppConstant.WareHouse_Code=wareCode;
+                    AppConstant.WareHouse_Name=wareName;
+                    AppConstant.User_Name=userInfo.getResult().getName();
+
+                    openActivity(MainActivity.class);
+                    finish();
+                }
+                else
+                {
+
+                    ToastUtil.show(LoginActivity.this,R.string.login_failed);
+                }
+                break;
+            case  2:
+
+                WareResponse wareResponse = gson.fromJson(response.get(),WareResponse.class);
+                if(wareResponse!=null&&wareResponse.getCode().equals("200"))
+                {
+                    wareList=wareResponse.getResult();
+                }
+                else
+                {
+                    wareList=new ArrayList<>();
+                }
+                arrWareAdapter= new ArrayAdapter<WareHouse>(this,
+                        android.R.layout.simple_spinner_item, wareList);
+
+                arrWareAdapter
+                        .setDropDownViewResource(R.layout.ware_item);
+                // 加载适配器
+                mloginWareSpinner.setAdapter(arrWareAdapter);
+                mloginWareSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int position, long id) {
+                        wareCode = ((WareHouse) mloginWareSpinner.getSelectedItem())
+                                .getWarehouseCode();
+                        wareName = ((WareHouse) mloginWareSpinner.getSelectedItem())
+                                .getWarehouseName();
+
+                        serviceUrl=((WareHouse) mloginWareSpinner.getSelectedItem())
+                                .getServiceUrl();
+				/*Toast.makeText(getApplicationContext(), String.valueOf(ids),
+						Toast.LENGTH_LONG).show();*/
+
+
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                        // TODO Auto-generated method stub
+
+                    }
+                });
+                break;
+
+        };
+
+    }
+
+    @Override
+    public void onFailed(int what, Response<String> response) {
+        ToastUtil.show(LoginActivity.this,R.string.login_failed);
+    }
 
     /**第三方登录回调标识**/
     private static final int MSG_SMSSDK_CALLBACK = 1;
@@ -77,17 +189,17 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private EditText mAccountLoginEtPassword;
     private CheckBox mAccountLoginCheckBox;
     private ImageView mAccountLoginIvClearPassword;
-    private EditText mEtCheckCode;
+   /* private EditText mEtCheckCode;
     private ImageView mIvCheckCode;
-    private RelativeLayout mLlCheckCode;
+    private RelativeLayout mLlCheckCode;*/
     private LinearLayout mAccountLoginLayout;
     private Button mQuickLoginBtn;
     private Button mAccountLoginBtn;
-    private TextView mAccountLoginTvForgetPassword;
+   /* private TextView mAccountLoginTvForgetPassword;
     private ImageView mBottomIvQq;
     private ImageView mBottomIvWechat;
     private ImageView mBottomIvWeibo;
-    private ImageView mBottomIvAlipay;
+    private ImageView mBottomIvAlipay;*/
 
     private Animation mLeftLineAnimation;
     private Animation mRightLineAnimation;
@@ -102,10 +214,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private boolean isUserNameNull = true;
     private boolean isPasswordNull = true;
 
-    private boolean isQuickLoginSelected = true;
+   // private boolean isQuickLoginSelected = true;
     private boolean isAccountLoginSelected = false;
     private int mSecCount;
-    private String mPhoneNumber;
+   // private String mPhoneNumber;
 
     private Handler mHandler;
 
@@ -114,6 +226,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         initView();
+        initData();
         initAnimation();
         setViewListener();
 
@@ -121,29 +234,43 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         mHandler = new Handler(this);
     }
 
+    private  void  initData()
+    {
+        WareRequest request=new WareRequest();
+        Gson gson = new Gson();
+        String json=gson.toJson(request);
+
+        Request<String> wareRequest = NoHttp.createStringRequest(AppConstant.BASE_URL+"warehouseInfo/getAllWarehouse",RequestMethod.POST);
+        wareRequest.setDefineRequestBodyForJson(json);
+
+        CallServer.getInstance().add(LoginActivity.this, 2, wareRequest, this, true, true);
+
+
+    }
+
     private void setViewListener() {
         //顶部选择
-        mTitleBarIvBack.setOnClickListener(this);
-        mTitleBarTvRegister.setOnClickListener(this);
-        mSelectTvQuickLogin.setOnClickListener(this);
-        mSelectTvAccountLogin.setOnClickListener(this);
+       // mTitleBarIvBack.setOnClickListener(this);
+       // mTitleBarTvRegister.setOnClickListener(this);
+       // mSelectTvQuickLogin.setOnClickListener(this);
+      //  mSelectTvAccountLogin.setOnClickListener(this);
         //快速登录
-        mQuickLoginIvClearPhoneNumber.setOnClickListener(this);
+       /* mQuickLoginIvClearPhoneNumber.setOnClickListener(this);
         mQuickLoginBtnGetCode.setOnClickListener(this);
         mQuickLoginIvClearCode.setOnClickListener(this);
-        mQuickLoginBtn.setOnClickListener(this);
+        mQuickLoginBtn.setOnClickListener(this);*/
         //账号登录
         mAccountLoginIvClearUsername.setOnClickListener(this);
         mAccountLoginIvClearPassword.setOnClickListener(this);
         mAccountLoginBtn.setOnClickListener(this);
-        mAccountLoginTvForgetPassword.setOnClickListener(this);
+      //  mAccountLoginTvForgetPassword.setOnClickListener(this);
         //第三方登录
-        mBottomIvQq.setOnClickListener(this);
+      /*  mBottomIvQq.setOnClickListener(this);
         mBottomIvWechat.setOnClickListener(this);
         mBottomIvWeibo.setOnClickListener(this);
-        mBottomIvAlipay.setOnClickListener(this);
+        mBottomIvAlipay.setOnClickListener(this);*/
 
-        mAccountLoginCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+       mAccountLoginCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 //切换明密文
@@ -157,7 +284,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             }
         });
 
-        mQuickLoginEtPhoneNumber.addTextChangedListener(new TextInputWatcher() {
+     /*   mQuickLoginEtPhoneNumber.addTextChangedListener(new TextInputWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 isPhoneNumberNull = TextUtils.isEmpty(mQuickLoginEtPhoneNumber.getText());
@@ -165,9 +292,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 mQuickLoginIvClearPhoneNumber.setEnabled(!isPhoneNumberNull);
                 mQuickLoginBtn.setEnabled((isPhoneNumberNull||isCodeNull) ? false : true);
             }
-        });
+        });*/
 
-        mQuickLoginEtCode.addTextChangedListener(new TextInputWatcher() {
+       /* mQuickLoginEtCode.addTextChangedListener(new TextInputWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
                 isCodeNull = TextUtils.isEmpty(mQuickLoginEtCode.getText());
@@ -175,7 +302,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 mQuickLoginIvClearCode.setEnabled(!isCodeNull);
                 mQuickLoginBtn.setEnabled((isPhoneNumberNull||isCodeNull) ? false : true);
             }
-        });
+        });*/
 
         mAccountLoginEtUsername.addTextChangedListener(new TextInputWatcher() {
             @Override
@@ -248,13 +375,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private void initView() {
-        mTitleBarIvBack = (ImageView) findViewById(R.id.login_titleBar_iv_back);
+        mloginWareSpinner=(Spinner) findViewById(R.id.login_ware_spinner);
+
+       /* mTitleBarIvBack = (ImageView) findViewById(R.id.login_titleBar_iv_back);
         mTitleBarTvRegister = (TextView) findViewById(R.id.login_titleBar_tv_register);
-        mSelectTvQuickLogin = (TextView) findViewById(R.id.login_select_tv_quickLogin);
-        mSelectTvAccountLogin = (TextView) findViewById(R.id.login_select_tv_accountLogin);
-        mSelectLeftLine = findViewById(R.id.login_select_left_line);
+        mSelectTvQuickLogin = (TextView) findViewById(R.id.login_select_tv_quickLogin);*/
+     //   mSelectTvAccountLogin = (TextView) findViewById(R.id.login_select_tv_accountLogin);
+       // mSelectLeftLine = findViewById(R.id.login_select_left_line);
         mSelectRightLine = findViewById(R.id.login_select_right_line);
-        mQuickLoginEtPhoneNumber = (EditText) findViewById(R.id.login_quick_login_et_phoneNumber);
+       /* mQuickLoginEtPhoneNumber = (EditText) findViewById(R.id.login_quick_login_et_phoneNumber);
         mQuickLoginIvClearPhoneNumber = (ImageView) findViewById(R.id.login_quick_login_iv_clear_phoneNumber);
         mQuickLoginEtCode = (EditText) findViewById(R.id.login_quick_login_et_code);
         mQuickLoginBtnGetCode = (Button) findViewById(R.id.login_quick_login_btn_getCode);
@@ -262,29 +391,29 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         mEtCheckPicture = (EditText) findViewById(R.id.et_check_picture);
         mIvCheckPicture = (ImageView) findViewById(R.id.iv_check_picture);
         mLlCheckPicture = (RelativeLayout) findViewById(R.id.ll_check_picture);
-        mQuickLoginLayout = (LinearLayout) findViewById(R.id.login_quick_login_layout);
+        mQuickLoginLayout = (LinearLayout) findViewById(R.id.login_quick_login_layout);*/
         mAccountLoginEtUsername = (EditText) findViewById(R.id.login_account_login_et_username);
         mAccountLoginIvClearUsername = (ImageView) findViewById(R.id.login_account_login_iv_clear_username);
         mAccountLoginEtPassword = (EditText) findViewById(R.id.login_account_login_et_password);
         mAccountLoginCheckBox = (CheckBox) findViewById(R.id.login_account_login_checkBox);
         mAccountLoginIvClearPassword = (ImageView) findViewById(R.id.login_account_login_iv_clear_password);
-        mEtCheckCode = (EditText) findViewById(R.id.et_check_code);
+        /*mEtCheckCode = (EditText) findViewById(R.id.et_check_code);
         mIvCheckCode = (ImageView) findViewById(R.id.iv_check_code);
-        mLlCheckCode = (RelativeLayout) findViewById(R.id.ll_check_code);
+        mLlCheckCode = (RelativeLayout) findViewById(R.id.ll_check_code);*/
         mAccountLoginLayout = (LinearLayout) findViewById(R.id.login_account_login_layout);
-        mQuickLoginBtn = (Button) findViewById(R.id.login_quick_login_btn);
+       // mQuickLoginBtn = (Button) findViewById(R.id.login_quick_login_btn);
         mAccountLoginBtn = (Button) findViewById(R.id.login_account_login_btn);
-        mAccountLoginTvForgetPassword = (TextView) findViewById(R.id.login_account_login_tv_forget_password);
+       /* mAccountLoginTvForgetPassword = (TextView) findViewById(R.id.login_account_login_tv_forget_password);
         mBottomIvQq = (ImageView) findViewById(R.id.login_bottom_iv_qq);
         mBottomIvWechat = (ImageView) findViewById(R.id.login_bottom_iv_wechat);
         mBottomIvWeibo = (ImageView) findViewById(R.id.login_bottom_iv_weibo);
-        mBottomIvAlipay = (ImageView) findViewById(R.id.login_bottom_iv_alipay);
+        mBottomIvAlipay = (ImageView) findViewById(R.id.login_bottom_iv_alipay);*/
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.login_titleBar_iv_back:
+           /* case R.id.login_titleBar_iv_back:
                 finish();
                 break;
             case R.id.login_titleBar_tv_register:
@@ -296,15 +425,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                     isQuickLoginSelected = true;
                     isAccountLoginSelected = false;
                 }
-                break;
-            case R.id.login_select_tv_accountLogin:
+                break;*/
+           /* case R.id.login_select_tv_accountLogin:
                 if (!isAccountLoginSelected) {
                     mSelectLeftLine.startAnimation(mLeftLineAnimation);
                     isAccountLoginSelected = true;
-                    isQuickLoginSelected = false;
+                  //  isQuickLoginSelected = false;
                 }
-                break;
-            case R.id.login_quick_login_iv_clear_phoneNumber:
+                break;*/
+           /* case R.id.login_quick_login_iv_clear_phoneNumber:
                 mQuickLoginEtPhoneNumber.setText("");
                 mQuickLoginIvClearPhoneNumber.setVisibility(View.GONE);
                 break;
@@ -331,8 +460,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 } else {
                     ToastUtil.show(this,R.string.phone_number_incorrect);
                 }
-                break;
-            case R.id.login_quick_login_btn:
+                break;*/
+           /* case R.id.login_quick_login_btn:
                 mPhoneNumber = mQuickLoginEtPhoneNumber.getText().toString();
                 String code = mQuickLoginEtCode.getText().toString();
                 if (LoginHelperUtil.isCodeCorrect(code) && LoginHelperUtil.isPhoneNumber(mPhoneNumber)) {
@@ -352,7 +481,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 } else {
                     ToastUtil.showLong(this,R.string.quick_login_input_incorrect);
                 }
-                break;
+                break;*/
             case R.id.login_account_login_iv_clear_username:
                 mAccountLoginEtUsername.setText("");
                 mAccountLoginIvClearUsername.setVisibility(View.GONE);
@@ -365,7 +494,27 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 String username = mAccountLoginEtUsername.getText().toString();
                 String password = mAccountLoginEtPassword.getText().toString();
                 if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
-                    BmobManager.getInstance(new BmobLoginCallback() {
+
+                    String searchUrl = "http://test.api.portal.bjshengeng.com/services/user/checkAndGetUserResource";
+
+                    LoginRequest request = new LoginRequest();
+                    request.setName("123");
+                    request.setPassword("123456");
+                    request.setWarehouseCode("10");
+                    Gson gson = new Gson();
+                    String json=gson.toJson(request);
+
+                    Request<String> loginRequest = NoHttp.createStringRequest(searchUrl,RequestMethod.POST);
+                    loginRequest.setDefineRequestBodyForJson(json);
+
+                    CallServer.getInstance().add(LoginActivity.this, 1, loginRequest, this, true, true);
+
+
+               /*     Request<String> filmRequest = NoHttp.createStringRequest(AppConstant.HOT_FILM_URL,RequestMethod.GET);
+
+                    CallServer.getInstance().add(LoginActivity.this, 1, filmRequest, new OnResponseListener<String>() {
+                    }, true, true);*/
+                   /* BmobManager.getInstance(new BmobLoginCallback() {
                         @Override
                         public void onLoginSuccess() {
                             ToastUtil.show(LoginActivity.this,R.string.login_success);
@@ -377,12 +526,12 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                         public void onLoginFailure() {
                             ToastUtil.show(LoginActivity.this,R.string.login_failed);
                         }
-                    }).login(username,password);
+                    }).login(username,password);*/
                 } else {
                     ToastUtil.show(this,R.string.login_input_empty);
                 }
                 break;
-            case R.id.login_account_login_tv_forget_password:
+           /* case R.id.login_account_login_tv_forget_password:
 
                 break;
             case R.id.login_bottom_iv_qq:
@@ -396,14 +545,14 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             case R.id.login_bottom_iv_weibo:
                 Platform sina = ShareSDK.getPlatform(SinaWeibo.NAME);
                 authorize(sina);
-                /*Platform weibo = ShareSDK.getPlatform(SinaWeibo.NAME);
+                *//*Platform weibo = ShareSDK.getPlatform(SinaWeibo.NAME);
                 weibo.SSOSetting(false);  //设置false表示使用SSO授权方式
                 weibo.setPlatformActionListener(this); // 设置分享事件回调
                 weibo.authorize();//单独授权
-                weibo.showUser(null);//授权并获取用户信息*/
+                weibo.showUser(null);//授权并获取用户信息*//*
                 break;
             case R.id.login_bottom_iv_alipay:
-                break;
+                break;*/
             default:
                 break;
         }

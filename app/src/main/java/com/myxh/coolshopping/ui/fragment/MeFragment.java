@@ -71,13 +71,13 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_me, null);
-        initView(view);
-        initUserLayout();
+       /* initView(view);
+        initUserLayout();*/
         return view;
     }
 
     private void initUserLayout() {
-        User user = User.getCurrentUser(User.class);
+        /*User user = User.getCurrentUser(User.class);
         if (user != null) {
             mLoginLayout.setVisibility(View.VISIBLE);
             mNologinLayout.setVisibility(View.GONE);
@@ -96,11 +96,11 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
             mNologinLayout.setVisibility(View.VISIBLE);
             mItemBankcardLayout.setVisibility(View.GONE);
             mItemCouponsLayout.setVisibility(View.GONE);
-        }
+        }*/
     }
 
     private void initView(View view) {
-        mLoginIvHead = (SimpleDraweeView) view.findViewById(R.id.me_login_iv_head);
+      /*  mLoginIvHead = (SimpleDraweeView) view.findViewById(R.id.me_login_iv_head);
         mLoginTvUsername = (TextView) view.findViewById(R.id.me_login_tv_username);
         mLoginIvLevel = (ImageView) view.findViewById(R.id.me_login_iv_level);
         mLoginTvBalance = (TextView) view.findViewById(R.id.me_login_tv_balance);
@@ -144,12 +144,12 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
         mItemCouponsLayout.setOnClickListener(this);
         mItemRecommendLayout.setOnClickListener(this);
         mItemQrLayout.setOnClickListener(this);
-        mLoginProfileLayout.setOnClickListener(this);
+        mLoginProfileLayout.setOnClickListener(this);*/
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
+       /* switch (v.getId()) {
             case R.id.me_login_iv_head:
 
                 break;
@@ -228,18 +228,18 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
                 Intent qrIntent = new Intent(getActivity(), CaptureActivity.class);
                 getActivity().startActivityForResult(qrIntent,SCAN_QR_REQUEST);
                 break;
-        }
+        }*/
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == LOGIN_REQUEST_CODE && resultCode == LoginActivity.LOGIN_RESULT_CODE) {
+      /*  if (requestCode == LOGIN_REQUEST_CODE && resultCode == LoginActivity.LOGIN_RESULT_CODE) {
             initUserLayout();
         } else if (requestCode == PROFILE_REQUEST_CODE && resultCode == UserProfileActivity.PROFILE_RESULT_CODE) {
             initUserLayout();
         } else if (requestCode == SCAN_QR_REQUEST) {
 
         }
-        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);*/
     }
 }

@@ -47,8 +47,10 @@ public class GridAdapter extends BaseAdapter {
         ImageView gridIcon = (ImageView) mView.findViewById(R.id.grid_icon);
         TextView gridTitle = (TextView) mView.findViewById(R.id.grid_title);
 
+        TextView gridCode = (TextView) mView.findViewById(R.id.grid_code);
         gridIcon.setImageResource(mData.get(i).getGridIcon());
         gridTitle.setText(mData.get(i).getGridTitle());
+        gridCode.setText(mData.get(i).getCode());
         return mView;
     }
 }

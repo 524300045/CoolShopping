@@ -27,7 +27,9 @@ public class AppConstant {
     /**
      * 数据请求基地址
      */
-    public static final String BASE_URL = "http://7xij5m.com1.z0.glb.clouddn.com/";
+    public static  String BASE_URL = "http://test.api.vcps.bjshengeng.com/services/";
+
+    public static  String BASE_URL_PORTAL = "http://test.api.portal.bjshengeng.com/services";
 
     /**
      * 猜你喜欢
@@ -50,4 +52,14 @@ public class AppConstant {
     public static final String KEY_CITY = "city";
 
     public static final String PAY_PLUGIN_NAME = "bp.db";
+
+    public  static  String WareHouse_Code="";
+
+    public  static  String WareHouse_Name="";
+
+    public  static  String DRIVER_Code="";
+
+    public  static  String DRIVER_Name="";
+
+    public  static  String User_Name="";
 }

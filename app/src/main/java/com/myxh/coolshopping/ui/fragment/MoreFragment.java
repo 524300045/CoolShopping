@@ -8,12 +8,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.myxh.coolshopping.R;
+import com.myxh.coolshopping.common.AppManager;
 import com.myxh.coolshopping.common.CoolApplication;
 import com.myxh.coolshopping.ui.base.BaseFragment;
 import com.myxh.coolshopping.util.DataClearUtil;
@@ -41,6 +43,8 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
     private RelativeLayout mItemCheckUpdateLayout;
     private RelativeLayout mItemAboutLayout;
 
+    private Button btnExit;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -50,7 +54,9 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initView(View view) {
-        mToolbar = (Toolbar) view.findViewById(R.id.more_toolbar);
+        btnExit=(Button)view.findViewById(R.id.btnExit);
+        btnExit.setOnClickListener(this);
+      /*  mToolbar = (Toolbar) view.findViewById(R.id.more_toolbar);
         mBtnWifiSwitch = (CheckBox) view.findViewById(R.id.more_btn_wifi_switch);
         mBtnNoticeSwitch = (CheckBox) view.findViewById(R.id.more_btn_notice_switch);
         mItemShareLayout = (RelativeLayout) view.findViewById(R.id.more_item_share_layout);
@@ -89,12 +95,20 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
         mItemAboutLayout.setOnClickListener(this);
 
         mItemTvCacheSize.setText(DataClearUtil.getTotalCacheSize(getActivity()));
-        mItemTvCurrentVersion.setText(CoolApplication.getAppContext().getAppVersion());
+        mItemTvCurrentVersion.setText(CoolApplication.getAppContext().getAppVersion());*/
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
+        switch (view.getId())
+        {
+            case  R.id.btnExit:
+                AppManager.getInstance().finishAllActivity();
+                System.exit(0);
+                break;
+
+        }
+       /* switch (view.getId()) {
             case R.id.more_item_share_layout:
                 break;
             case R.id.more_item_clear_cache_layout:
@@ -118,14 +132,14 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.more_item_about_layout:
                 break;
-        }
+        }*/
     }
 
     /**
      * 打开应用商店
      * @param packageName
      */
-    private void openAppMarket(String packageName) {
+   /* private void openAppMarket(String packageName) {
         try {
             String str = "market://detail?id=" + packageName;
             Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -140,5 +154,5 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
             intent.setData(Uri.parse(url));
             startActivity(intent);
         }
-    }
+    }*/
 }

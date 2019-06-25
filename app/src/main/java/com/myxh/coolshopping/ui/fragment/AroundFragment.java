@@ -62,14 +62,14 @@ public class AroundFragment extends BaseFragment implements HttpListener<String>
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_around, null);
 
-        initData();
-        initView(view);
-        initPopMenu();
+       // initData();
+      //  initView(view);
+       // initPopMenu();
         return view;
     }
 
     private void initData() {
-        mMenuData1 = new ArrayList<>();
+       /* mMenuData1 = new ArrayList<>();
         String[] products = getResources().getStringArray(R.array.supplier_product);
         for (int i = 0; i < products.length; i++) {
             Map<String, String> map = new HashMap<>();
@@ -89,7 +89,7 @@ public class AroundFragment extends BaseFragment implements HttpListener<String>
             Map<String, String> map = new HashMap<>();
             map.put(MENU_DATA_KEY, activitys[i]);
             mMenuData3.add(map);
-        }
+        }*/
 
     }
 
@@ -103,7 +103,7 @@ public class AroundFragment extends BaseFragment implements HttpListener<String>
     }
 
     private void initView(View view) {
-        mToolbar = (Toolbar) view.findViewById(R.id.around_toolbar);
+       /* mToolbar = (Toolbar) view.findViewById(R.id.around_toolbar);
         mToolbar.inflateMenu(R.menu.around_title_menu);
         mToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -129,11 +129,11 @@ public class AroundFragment extends BaseFragment implements HttpListener<String>
         mSupplierListSort.setOnClickListener(this);
         mSupplierListActivity = (LinearLayout) view.findViewById(R.id.around_supplier_list_activity);
         mSupplierListActivity.setOnClickListener(this);
-        mListView = (ListView) view.findViewById(R.id.around_listView);
+        mListView = (ListView) view.findViewById(R.id.around_listView);*/
     }
 
     private void initPopMenu() {
-        View popView = LayoutInflater.from(getActivity()).inflate(R.layout.layout_popwin_supplier_list, null);
+       /* View popView = LayoutInflater.from(getActivity()).inflate(R.layout.layout_popwin_supplier_list, null);
         mPopListView = (ListView) popView.findViewById(R.id.popwin_list_view);
         mPopupWindow = new PopupWindow(popView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
         mPopupWindow.setOutsideTouchable(true);
@@ -182,12 +182,12 @@ public class AroundFragment extends BaseFragment implements HttpListener<String>
                         break;
                 }
             }
-        });
+        });*/
     }
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
+        /*switch (view.getId()) {
             case R.id.around_supplier_list_product:
                 mSupplierListTvProduct.setTextColor(getResources().getColor(R.color.around_supplier_title_selected_color));
                 mPopListView.setAdapter(mMenuAdapter1);
@@ -208,6 +208,6 @@ public class AroundFragment extends BaseFragment implements HttpListener<String>
                 break;
             default:
                 break;
-        }
+        }*/
     }
 }

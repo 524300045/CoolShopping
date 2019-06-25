@@ -28,13 +28,21 @@ import com.myxh.coolshopping.common.CoolApplication;
 import com.myxh.coolshopping.entity.FilmInfo;
 import com.myxh.coolshopping.entity.GoodsInfo;
 import com.myxh.coolshopping.entity.HomeGridInfo;
+import com.myxh.coolshopping.entity.StoreCheckInfo;
+import com.myxh.coolshopping.entity.UserDriverRel;
 import com.myxh.coolshopping.listener.ViewPagerListener;
 import com.myxh.coolshopping.model.User;
 import com.myxh.coolshopping.network.CallServer;
 import com.myxh.coolshopping.network.HttpListener;
+import com.myxh.coolshopping.request.StoreCheckRequest;
+import com.myxh.coolshopping.request.UserDriverRequest;
+import com.myxh.coolshopping.response.StoreCheckResponse;
+import com.myxh.coolshopping.response.UserDriverRelResponse;
+import com.myxh.coolshopping.ui.activity.BoxMainActivity;
 import com.myxh.coolshopping.ui.activity.CityActivity;
 import com.myxh.coolshopping.ui.activity.DetailActivity;
 import com.myxh.coolshopping.ui.activity.MessageActivity;
+import com.myxh.coolshopping.ui.activity.StoreCheckActivity;
 import com.myxh.coolshopping.ui.adapter.BannerPagerAdapter;
 import com.myxh.coolshopping.ui.adapter.GoodsListAdapter;
 import com.myxh.coolshopping.ui.adapter.GridAdapter;
@@ -50,16 +58,22 @@ import com.yolanda.nohttp.rest.Request;
 import com.yolanda.nohttp.rest.Response;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by asus on 2016/8/27.
  */
 public class HomeFragment extends BaseFragment implements HttpListener<String> {
 
+
+
     private static final int GOOD_REQUEST = 0x01;
     private static final int FILM_REQUEST = 0x02;
     private static final int SCAN_QR_REQUEST = 103;
+    private static final int USER_DRIVER_REQUEST = 5;
+
     public static final String GOODS_ID = "goodsId";
     public static final String GOODS_SEVEN_REFUND = "sevenRefund";
     public static final String GOODS_TIME_REFUND = "timeRefund";
@@ -69,7 +83,7 @@ public class HomeFragment extends BaseFragment implements HttpListener<String> {
     private int[] imgRes = new int[]{R.drawable.banner01,R.drawable.banner02,R.drawable.banner03};
     private Handler mHandler = new Handler();
     //广告轮播
-    private ViewPager bannerPager;
+  //  private ViewPager bannerPager;
     private Indicator bannerIndicator;
     private View mView;
 
@@ -80,7 +94,7 @@ public class HomeFragment extends BaseFragment implements HttpListener<String> {
 
     private List<GoodsInfo.ResultBean.GoodlistBean> mGoodlist = new ArrayList<>();
     private List<FilmInfo.ResultBean> mFilmList = new ArrayList<>();
-    private LinearLayout mFilmLayout;
+    //private LinearLayout mFilmLayout;
     private ListView mListView;
     private GoodsListAdapter mGoodsListAdapter;
 
@@ -111,22 +125,35 @@ public class HomeFragment extends BaseFragment implements HttpListener<String> {
             }
         }
 
-        Request<String> goodRequest = NoHttp.createStringRequest(AppConstant.RECOMMEND_URL, RequestMethod.GET);
-        CallServer.getInstance().add(getActivity(), GOOD_REQUEST, goodRequest, this, true, true);
-
+/*        Request<String> goodRequest = NoHttp.createStringRequest(AppConstant.RECOMMEND_URL, RequestMethod.GET);
+        CallServer.getInstance().add(getActivity(), GOOD_REQUEST, goodRequest, this, true, true);*/
+/*
         Request<String> filmRequest = NoHttp.createStringRequest(AppConstant.HOT_FILM_URL,RequestMethod.GET);
-        CallServer.getInstance().add(getActivity(), FILM_REQUEST, filmRequest, this, true, true);
+        CallServer.getInstance().add(getActivity(), FILM_REQUEST, filmRequest, this, true, true);*/
+
+
+        UserDriverRequest request=new UserDriverRequest();
+        request.setUserName(AppConstant.User_Name);
+
+        Gson gson = new Gson();
+        String json=gson.toJson(request);
+
+        Request<String> userDriverRequest = NoHttp.createStringRequest(AppConstant.BASE_URL_PORTAL+"/userDriver/getUserDriverRel",RequestMethod.POST);
+        userDriverRequest.setDefineRequestBodyForJson(json);
+
+
+        CallServer.getInstance().add(getActivity(), USER_DRIVER_REQUEST, userDriverRequest, this, true, true);
     }
 
     private void antoScroll() {
-        mHandler.postDelayed(new Runnable() {
+      /*  mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 int currentItem = bannerPager.getCurrentItem();
                 bannerPager.setCurrentItem(currentItem+1,true);
                 mHandler.postDelayed(this,2000);
             }
-        },2000);
+        },2000);*/
     }
 
     private void initViews(View view) {
@@ -139,13 +166,13 @@ public class HomeFragment extends BaseFragment implements HttpListener<String> {
         //header头部
         View headView = LayoutInflater.from(getActivity()).inflate(R.layout.home_head_page,null);
         //banner
-        View bannerView = headView.findViewById(R.id.home_head_include_banner);
-        bannerPager = (ViewPager) bannerView.findViewById(R.id.home_banner_pager);
-        bannerIndicator = (Indicator) bannerView.findViewById(R.id.home_banner_indicator);
-        bannerPager.setAdapter(new BannerPagerAdapter(getChildFragmentManager(),imgRes));
-        bannerPager.addOnPageChangeListener(new ViewPagerListener(bannerIndicator));
+        //View bannerView = headView.findViewById(R.id.home_head_include_banner);
+       // bannerPager = (ViewPager) bannerView.findViewById(R.id.home_banner_pager);
+       // bannerIndicator = (Indicator) bannerView.findViewById(R.id.home_banner_indicator);
+       // bannerPager.setAdapter(new BannerPagerAdapter(getChildFragmentManager(),imgRes));
+        //bannerPager.addOnPageChangeListener(new ViewPagerListener(bannerIndicator));
         ViewPager headPager = (ViewPager) headView.findViewById(R.id.home_head_pager);
-        Indicator headIndicator = (Indicator) headView.findViewById(R.id.home_head_indicator);
+       // Indicator headIndicator = (Indicator) headView.findViewById(R.id.home_head_indicator);
         //第一页
         View pageOne = LayoutInflater.from(getActivity()).inflate(R.layout.home_gridview,null);
         GridView gridView1 = (GridView) pageOne.findViewById(R.id.home_gridView);
@@ -154,10 +181,13 @@ public class HomeFragment extends BaseFragment implements HttpListener<String> {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+                Bundle bundle = new Bundle();
+                openActivity(BoxMainActivity.class,bundle);
+
             }
         });
         //第二页
-        View pageTwo = LayoutInflater.from(getActivity()).inflate(R.layout.home_gridview,null);
+       /* View pageTwo = LayoutInflater.from(getActivity()).inflate(R.layout.home_gridview,null);
         GridView gridView2 = (GridView) pageTwo.findViewById(R.id.home_gridView);
         gridView2.setAdapter(new GridAdapter(getActivity(),pageTwoData));
         gridView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -165,21 +195,21 @@ public class HomeFragment extends BaseFragment implements HttpListener<String> {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
             }
-        });
+        });*/
         mViewList.add(pageOne);
-        mViewList.add(pageTwo);
+       // mViewList.add(pageTwo);
         headPager.setAdapter(new ViewPageAdapter(mViewList));
-        headPager.addOnPageChangeListener(new ViewPagerListener(headIndicator));
+      //  headPager.addOnPageChangeListener(new ViewPagerListener(headIndicator));
         //热门电影
-        View filmView = headView.findViewById(R.id.home_head_include_film);
-        mFilmLayout = (LinearLayout) filmView.findViewById(R.id.home_film_ll);
+      /*  View filmView = headView.findViewById(R.id.home_head_include_film);
+        mFilmLayout = (LinearLayout) filmView.findViewById(R.id.home_film_ll);*/
 
 //        mRefreshListView.addHeaderView(bannerView);
-        mListView = mRefreshListView.getRefreshableView();
+       mListView = mRefreshListView.getRefreshableView();
         mListView.addHeaderView(headView);
         mListView.setHeaderDividersEnabled(false);
         int headerViewsCount = mListView.getHeaderViewsCount();
-        mGoodsListAdapter = new GoodsListAdapter(getActivity(),mGoodlist,headerViewsCount);
+         mGoodsListAdapter = new GoodsListAdapter(getActivity(),mGoodlist,headerViewsCount);
         mRefreshListView.setAdapter(mGoodsListAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -194,7 +224,7 @@ public class HomeFragment extends BaseFragment implements HttpListener<String> {
         });
 
         //下拉刷新
-        mRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
+      /*  mRefreshListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
             @Override
             public void onRefresh(PullToRefreshBase<ListView> refreshView) {
                 isRefreshing = true;
@@ -204,7 +234,7 @@ public class HomeFragment extends BaseFragment implements HttpListener<String> {
                 Request<String> filmRequest = NoHttp.createStringRequest(AppConstant.HOT_FILM_URL,RequestMethod.GET);
                 CallServer.getInstance().add(getActivity(), FILM_REQUEST, filmRequest, HomeFragment.this, true, true);
             }
-        });
+        });*/
     }
 
     private void initTitlebar(View view) {
@@ -219,16 +249,16 @@ public class HomeFragment extends BaseFragment implements HttpListener<String> {
             }
         });
 
-        ImageView scanQR = (ImageView) view.findViewById(R.id.titleBar_scan_img);
+      /*  ImageView scanQR = (ImageView) view.findViewById(R.id.titleBar_scan_img);
         scanQR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), CaptureActivity.class);
                 getActivity().startActivityForResult(intent,SCAN_QR_REQUEST);
             }
-        });
+        });*/
 
-        ImageView messageBox = (ImageView) view.findViewById(R.id.titleBar_msg_iv);
+       /* ImageView messageBox = (ImageView) view.findViewById(R.id.titleBar_msg_iv);
         messageBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -239,7 +269,7 @@ public class HomeFragment extends BaseFragment implements HttpListener<String> {
                     ToastUtil.show(getActivity(),R.string.me_nologin_not_login);
                 }
             }
-        });
+        });*/
     }
 
     @Override
@@ -275,25 +305,26 @@ public class HomeFragment extends BaseFragment implements HttpListener<String> {
     @Override
     public void onSucceed(int what, Response<String> response) {
         if (isRefreshing) {
-            mRefreshListView.onRefreshComplete();
+            //mRefreshListView.onRefreshComplete();
             isRefreshing = false;
         }
+
         switch (what) {
             case GOOD_REQUEST:
-                Gson gson = new Gson();
-                GoodsInfo goodsInfo = gson.fromJson(response.get(),GoodsInfo.class);
-                List<GoodsInfo.ResultBean.GoodlistBean> goodlistBeen = goodsInfo.getResult().getGoodlist();
-                mGoodlist.clear();
-                mGoodlist.addAll(goodlistBeen);
-                mGoodsListAdapter.notifyDataSetChanged();
+               // Gson gson = new Gson();
+               // GoodsInfo goodsInfo = gson.fromJson(response.get(),GoodsInfo.class);
+               // List<GoodsInfo.ResultBean.GoodlistBean> goodlistBeen = goodsInfo.getResult().getGoodlist();
+               // mGoodlist.clear();
+               // mGoodlist.addAll(goodlistBeen);
+                //mGoodsListAdapter.notifyDataSetChanged();
                 break;
             case FILM_REQUEST:
                 Gson filmGson = new Gson();
-                FilmInfo filmInfo = filmGson.fromJson(response.get(),FilmInfo.class);
-                List<FilmInfo.ResultBean> filmList = filmInfo.getResult();
-                mFilmList.clear();
-                mFilmList.addAll(filmList);
-                mFilmLayout.removeAllViews();
+               // FilmInfo filmInfo = filmGson.fromJson(response.get(),FilmInfo.class);
+               // List<FilmInfo.ResultBean> filmList = filmInfo.getResult();
+               // mFilmList.clear();
+               // mFilmList.addAll(filmList);
+              /*  mFilmLayout.removeAllViews();
 
                 for (int i = 0; i < mFilmList.size(); i++) {
                     View filmItemView = LayoutInflater.from(getActivity()).inflate(R.layout.item_film,null);
@@ -304,14 +335,37 @@ public class HomeFragment extends BaseFragment implements HttpListener<String> {
                     filmTitle.setText(mFilmList.get(i).getFilmName());
                     filmGrade.setText(mFilmList.get(i).getGrade()+"分");
                     mFilmLayout.addView(filmItemView);
+                }*/
+              break;
+            case  USER_DRIVER_REQUEST:
+                Gson gson = new Gson();
+                UserDriverRelResponse userDriverRelResponse=gson.fromJson(response.get(),UserDriverRelResponse.class);
+                if (userDriverRelResponse!=null&&userDriverRelResponse.getCode().equals("200"))
+                {
+                    UserDriverRel userDriverRel=userDriverRelResponse.getResult();
+                    if(userDriverRel!=null)
+                    {
+                        AppConstant.DRIVER_Code=userDriverRel.getDriverCode();
+                    }
+                    else
+                    {
+                        ToastUtil.show(getActivity(),"还未绑定司机");
+                    }
+
                 }
+                else
+                {
+                    ToastUtil.show(getActivity(),"获取司机信息失败");
+                }
+                break;
+
         }
     }
 
     @Override
     public void onFailed(int what, Response<String> response) {
         if (isRefreshing) {
-            mRefreshListView.onRefreshComplete();
+            //mRefreshListView.onRefreshComplete();
             isRefreshing = false;
             ToastUtil.show(getActivity(),"刷新失败");
         }

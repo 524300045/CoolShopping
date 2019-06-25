@@ -28,6 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+<!--
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -79,13 +80,14 @@
                         android:text="@string/more_item_default_cache_size"/>
                 </RelativeLayout>
             </LinearLayout>
+-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/me_item_common_layout_marginTop"
                 android:orientation="vertical"
                 android:background="@drawable/white_quai_bg">
-                <RelativeLayout
+               <!-- <RelativeLayout
                     android:id="@+id/more_item_comment_layout"
                     style="@style/me_common_item_relativeLayout_style">
                     <TextView
@@ -104,7 +106,7 @@
                         android:text="@string/more_item_feedback"/>
                     <ImageView
                         style="@style/me_common_item_arrow_right_imageView_style"/>
-                </RelativeLayout>
+                </RelativeLayout>-->
                 <View
                     style="@style/me_horizontal_view_style"/>
                 <RelativeLayout
@@ -124,9 +126,12 @@
                     <TextView
                         android:id="@+id/more_item_tv_kefu"
                         style="@style/more_common_desc_textView_style"
-                        android:text="@string/more_item_kefu_number"/>
+                        android:text=""/>
                 </RelativeLayout>
             </LinearLayout>
+
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -156,7 +161,15 @@
                         style="@style/me_common_item_arrow_right_imageView_style"/>
                 </RelativeLayout>
             </LinearLayout>
+            <Button
+                android:id="@+id/btnExit"
+                android:text="退   出"
+                style="@style/customer_sumbit_btn_style" />
+
+
         </LinearLayout>
+
+
     </ScrollView>
 
 </LinearLayout>

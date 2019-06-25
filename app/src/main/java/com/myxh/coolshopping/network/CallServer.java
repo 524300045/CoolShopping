@@ -25,6 +25,7 @@ public class CallServer {
 
     public<T> void add(Context context, int what, Request<T> request, HttpListener<T> httpListener,
                        boolean canCancel, boolean isLoading) {
+
         mQueue.add(what,request,
                 new HttpResponseListener<T>(context, request, httpListener, canCancel, isLoading));
     }

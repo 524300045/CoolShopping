@@ -10,9 +10,18 @@ public class HomeGridInfo {
     private @StringRes int gridIcon;
     private String gridTitle;
 
+    private  String code;
+
+
     public HomeGridInfo(int gridIcon, String gridTitle) {
         this.gridIcon = gridIcon;
         this.gridTitle = gridTitle;
+    }
+
+    public HomeGridInfo(int gridIcon, String gridTitle,String code) {
+        this.gridIcon = gridIcon;
+        this.gridTitle = gridTitle;
+        this.code=code;
     }
 
     public int getGridIcon() {
@@ -29,6 +38,14 @@ public class HomeGridInfo {
 
     public void setGridTitle(String gridTitle) {
         this.gridTitle = gridTitle;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }
 

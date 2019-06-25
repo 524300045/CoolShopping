@@ -30,10 +30,12 @@ public class SplashActivity extends BaseActivity {
             public void run() {
                 boolean isFirst = SharePreferenceUtil.getBoolean(SplashActivity.this,"isFirst",true);
                 if (isFirst) {
-                    SharePreferenceUtil.putBoolean(SplashActivity.this,"isFirst",false);
-                    openActivity(GuideActivity.class);
+                    /*SharePreferenceUtil.putBoolean(SplashActivity.this,"isFirst",false);
+                    openActivity(GuideActivity.class);*/
+                    openActivity(LoginActivity.class);
                 } else {
-                    openActivity(MainActivity.class);
+                    //openActivity(MainActivity.class);
+                    openActivity(LoginActivity.class);
                 }
                 finish();
             }

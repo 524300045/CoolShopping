@@ -50,16 +50,16 @@ public class CoolApplication extends ZApplication {
         //百度地图初始化
         SDKInitializer.initialize(this);
         //Bmob初始化
-        Bmob.initialize(this, AppConstant.BMOB_AppID);
+     //   Bmob.initialize(this, AppConstant.BMOB_AppID);
         //热更新
-        initAndfix();
+     //   initAndfix();
         //Bmob支付初始化
-        initPay();
+      //  initPay();
 
         //Bmob检查更新
         if (flag) {
             flag = false;
-            BmobUpdateAgent.initAppVersion();
+           // BmobUpdateAgent.initAppVersion();
         }
     }
 
