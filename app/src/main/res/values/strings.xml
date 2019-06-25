@@ -33,7 +33,7 @@
     <string name="detail_bought">已售</string>
 
 
-    <string name="me_login_balance">账户余额:</string>
+    <string name="me_login_balance">姓名:</string>
     <string name="me_nologin_not_login">您还没有登录哦</string>
     <string name="me_nologin_login">立即登录</string>
     <string name="me_user_coupons">优惠券</string>
