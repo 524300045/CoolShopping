@@ -45,6 +45,8 @@ public class CoolApplication extends ZApplication {
 
         //NoHttp初始化
         NoHttp.initialize(this);
+        NoHttp.setDefaultConnectTimeout(30 * 1000);
+        NoHttp.setDefaultReadTimeout(30 * 1000);
         //Fresco初始化
         Fresco.initialize(this);
         //百度地图初始化

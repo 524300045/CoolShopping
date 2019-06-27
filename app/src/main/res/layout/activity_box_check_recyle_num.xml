@@ -126,6 +126,33 @@
             android:visibility="gone" />
     </RelativeLayout>
 
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="1dp"
+        >
+        <TextView
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="库区:"
+            android:id="@+id/tvAreaDes"
+            />
+
+        <Spinner
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="20dip"
+            android:id="@+id/ware_area_spinner"
+            android:dropDownVerticalOffset="50dp"
+            style="@style/login_spinner_style"
+            android:layout_toRightOf="@+id/tvAreaDes"
+            />
+
+
+
+    </RelativeLayout>
+
     <View style="@style/me_horizontal_view_style" />
 
     <Button

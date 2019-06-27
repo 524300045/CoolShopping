@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.myxh.coolshopping.R;
+import com.myxh.coolshopping.common.AppConstant;
 import com.myxh.coolshopping.model.User;
 import com.myxh.coolshopping.ui.activity.CartActivity;
 import com.myxh.coolshopping.ui.activity.CollectActivity;
@@ -71,8 +72,8 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_me, null);
-       /* initView(view);
-        initUserLayout();*/
+         initView(view);
+        /*  initUserLayout();*/
         return view;
     }
 
@@ -100,8 +101,9 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
     }
 
     private void initView(View view) {
-      /*  mLoginIvHead = (SimpleDraweeView) view.findViewById(R.id.me_login_iv_head);
         mLoginTvUsername = (TextView) view.findViewById(R.id.me_login_tv_username);
+      /*  mLoginIvHead = (SimpleDraweeView) view.findViewById(R.id.me_login_iv_head);
+
         mLoginIvLevel = (ImageView) view.findViewById(R.id.me_login_iv_level);
         mLoginTvBalance = (TextView) view.findViewById(R.id.me_login_tv_balance);
         mLoginIvArrowRight = (ImageView) view.findViewById(R.id.me_login_iv_arrow_right);
@@ -145,6 +147,8 @@ public class MeFragment extends BaseFragment implements View.OnClickListener {
         mItemRecommendLayout.setOnClickListener(this);
         mItemQrLayout.setOnClickListener(this);
         mLoginProfileLayout.setOnClickListener(this);*/
+
+        mLoginTvUsername.setText(AppConstant.User_Name);
     }
 
     @Override

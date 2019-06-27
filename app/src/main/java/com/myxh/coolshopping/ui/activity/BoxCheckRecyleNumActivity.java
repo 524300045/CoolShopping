@@ -5,24 +5,33 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.myxh.coolshopping.R;
 import com.myxh.coolshopping.common.AppConstant;
 import com.myxh.coolshopping.common.Util;
+import com.myxh.coolshopping.entity.WareHouse;
+import com.myxh.coolshopping.entity.WarehouseArea;
 import com.myxh.coolshopping.listener.TextInputWatcher;
 import com.myxh.coolshopping.network.CallServer;
 import com.myxh.coolshopping.network.HttpListener;
 import com.myxh.coolshopping.request.BoxCheckInfoAddRequest;
 import com.myxh.coolshopping.request.BoxCheckInfoRecyleUpdateRequest;
 import com.myxh.coolshopping.request.BoxCheckInfoRequest;
+import com.myxh.coolshopping.request.WareRequest;
+import com.myxh.coolshopping.request.WarehouseAreaRequest;
 import com.myxh.coolshopping.response.BoxCheckInfoAddResponse;
 import com.myxh.coolshopping.response.BoxCheckInfoRecyleUpdateResponse;
 import com.myxh.coolshopping.response.BoxCheckInfoResponse;
+import com.myxh.coolshopping.response.WareResponse;
+import com.myxh.coolshopping.response.WarehouseAreaResponse;
 import com.myxh.coolshopping.ui.base.BaseActivity;
 import com.myxh.coolshopping.util.ToastUtil;
 import com.yolanda.nohttp.NoHttp;
@@ -31,6 +40,8 @@ import com.yolanda.nohttp.rest.Request;
 import com.yolanda.nohttp.rest.Response;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BoxCheckRecyleNumActivity extends BaseActivity implements View.OnClickListener,HttpListener<String>  {
 
@@ -38,6 +49,9 @@ public class BoxCheckRecyleNumActivity extends BaseActivity implements View.OnCl
     private static final int  Box_CHCEK_REQUEST = 0x01; //根据司机获取门店信息what
 
     private static final int  Box_CHECK_RECYLE_REQUEST = 2;
+
+
+    private static final int  AREA_REQUEST =3;
 
     private ImageView mTitleBarIvBack;
 
@@ -72,6 +86,17 @@ public class BoxCheckRecyleNumActivity extends BaseActivity implements View.OnCl
     private  String customerCode;
 
 
+    private List<WarehouseArea> warehouseAreaList;
+
+    private Spinner mWareAreaSpinner;
+
+    private ArrayAdapter<WarehouseArea> arrWareAreaAdapter;
+
+    private  String wareAreaCode;
+
+    private  String wareAreaName;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,15 +128,22 @@ public class BoxCheckRecyleNumActivity extends BaseActivity implements View.OnCl
         request.setCustomerCode(customerCode);
         request.setStoredCode(storeCode);
         request.setStatus(0);
-
         Gson gson = new Gson();
         String json=gson.toJson(request);
-
         Request<String> boxTypeRequest = NoHttp.createStringRequest(AppConstant.BASE_URL+"/boxCheckInfo/getBoxCheckInfo",RequestMethod.POST);
         boxTypeRequest.setDefineRequestBodyForJson(json);
-
-
         CallServer.getInstance().add(BoxCheckRecyleNumActivity.this, Box_CHCEK_REQUEST, boxTypeRequest, this, true, true);
+
+
+        WarehouseAreaRequest warehouseAreaRequest=new WarehouseAreaRequest();
+        warehouseAreaRequest.setWarehouseCode(AppConstant.WareHouse_Code);
+        Gson wareGson = new Gson();
+        String areaJson=wareGson.toJson(warehouseAreaRequest);
+
+        Request<String> wareRequest = NoHttp.createStringRequest(AppConstant.BASE_URL+"/warehouseArea/getWarehouseArea",RequestMethod.POST);
+        wareRequest.setDefineRequestBodyForJson(areaJson);
+
+        CallServer.getInstance().add(BoxCheckRecyleNumActivity.this, AREA_REQUEST, wareRequest, this, true, true);
 
 
     }
@@ -130,6 +162,7 @@ public class BoxCheckRecyleNumActivity extends BaseActivity implements View.OnCl
         mIvClearNum=(ImageView) findViewById(R.id.iv_clear_num);
         mIvClearNum.setOnClickListener(this);
 
+        mWareAreaSpinner=(Spinner) findViewById(R.id.ware_area_spinner);
         etNum.addTextChangedListener(new TextInputWatcher() {
             @Override
             public void afterTextChanged(Editable editable) {
@@ -166,9 +199,16 @@ public class BoxCheckRecyleNumActivity extends BaseActivity implements View.OnCl
                     ToastUtil.show(BoxCheckRecyleNumActivity.this,"数量只能输入数字!");
                     return;
                 }
+                if (TextUtils.isEmpty(wareAreaCode))
+                {
+                    ToastUtil.show(BoxCheckRecyleNumActivity.this,"请选择库区!");
+                    return;
+                }
 
                 BoxCheckInfoRecyleUpdateRequest request=new BoxCheckInfoRecyleUpdateRequest();
 
+                request.setAreaCode(wareAreaCode);
+                request.setAreaName(wareAreaName);
                 request.setUserName(AppConstant.User_Name);
                 request.setCheckNo(checkNo);
                 request.setRealityNum(new BigDecimal(etNum.getText().toString()));
@@ -218,6 +258,43 @@ public class BoxCheckRecyleNumActivity extends BaseActivity implements View.OnCl
                 {
                     ToastUtil.show(BoxCheckRecyleNumActivity.this,"提交失败");
                 }
+                break;
+            case  AREA_REQUEST:
+                WarehouseAreaResponse warehouseAreaResponse = gson.fromJson(response.get(),WarehouseAreaResponse.class);
+                if(warehouseAreaResponse!=null&&warehouseAreaResponse.getCode().equals("200"))
+                {
+                    warehouseAreaList=warehouseAreaResponse.getResult();
+                }
+                else
+                {
+                    warehouseAreaList=new ArrayList<>();
+                }
+
+                arrWareAreaAdapter= new ArrayAdapter<WarehouseArea>(this,
+                        android.R.layout.simple_spinner_item, warehouseAreaList);
+
+                arrWareAreaAdapter
+                        .setDropDownViewResource(R.layout.ware_item);
+                // 加载适配器
+                mWareAreaSpinner.setAdapter(arrWareAreaAdapter);
+                mWareAreaSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    public void onItemSelected(AdapterView<?> parent, View view,
+                                               int position, long id) {
+                        wareAreaCode = ((WarehouseArea) mWareAreaSpinner.getSelectedItem())
+                                .getAreaCode();
+                        wareAreaName = ((WarehouseArea) mWareAreaSpinner.getSelectedItem())
+                                .getAreaName();
+
+
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> arg0) {
+                        // TODO Auto-generated method stub
+
+                    }
+                });
+
                 break;
         }
     }

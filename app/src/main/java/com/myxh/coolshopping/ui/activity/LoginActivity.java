@@ -498,9 +498,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                     String searchUrl = "http://test.api.portal.bjshengeng.com/services/user/checkAndGetUserResource";
 
                     LoginRequest request = new LoginRequest();
-                    request.setName("123");
-                    request.setPassword("123456");
-                    request.setWarehouseCode("10");
+                    request.setName(username);
+                    request.setPassword(password);
+                    request.setWarehouseCode(wareCode);
                     Gson gson = new Gson();
                     String json=gson.toJson(request);
 
