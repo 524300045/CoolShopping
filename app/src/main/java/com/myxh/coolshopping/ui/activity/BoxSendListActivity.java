@@ -78,6 +78,8 @@ public class BoxSendListActivity extends BaseActivity implements View.OnClickLis
 
     private  String lineName;
 
+    private Integer isFresh;
+
     SpecialAdapter adapter;
     private boolean loadFinishFlag;
     private int startIndex;
@@ -117,6 +119,7 @@ public class BoxSendListActivity extends BaseActivity implements View.OnClickLis
         lineCode=getIntent().getExtras().getString("lineCode");
         lineName=getIntent().getExtras().getString("lineName");
 
+        isFresh=getIntent().getIntExtra("isFresh",0);
         tvTitle.setText("发运出库-"+boxTypeName);
 
         BoxOutDetailQueryRequest boxOutDetailQueryRequest=new BoxOutDetailQueryRequest();
@@ -125,6 +128,7 @@ public class BoxSendListActivity extends BaseActivity implements View.OnClickLis
         boxOutDetailQueryRequest.setBoxTypeCode(boxTypeCode);
         boxOutDetailQueryRequest.setPageIndex(endIndex);
         boxOutDetailQueryRequest.setPageSize(pageSize);
+        boxOutDetailQueryRequest.setIsFresh(isFresh);
        // Gson gson = new Gson();
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -201,6 +205,8 @@ public class BoxSendListActivity extends BaseActivity implements View.OnClickLis
 
                 bundle.putString("lineCode",lineCode);
                 bundle.putString("lineName",lineName);
+                bundle.putInt("isFresh",isFresh);
+
 
                 Intent intent=new Intent();
                 intent.setClass(BoxSendListActivity.this, BoxSendNumActivity.class);

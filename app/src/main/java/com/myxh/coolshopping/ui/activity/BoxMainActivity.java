@@ -113,6 +113,16 @@ public class BoxMainActivity extends BaseActivity implements View.OnClickListene
                     //发运出库
                     openActivity(BoxSendLineActivity.class);
                 }
+                else if (tv.getText().toString().equals("boxfreshsend"))
+                {
+                    //生鲜发运出库
+                    openActivity(BoxFreshSendActivity.class);
+                }
+                else if (tv.getText().toString().equals("boxstandsend"))
+                {
+                    //干货发运出库
+                    openActivity(BoxStandSendActivity.class);
+                }
             }
         });
 

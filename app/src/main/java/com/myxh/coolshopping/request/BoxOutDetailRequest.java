@@ -53,6 +53,16 @@ public class BoxOutDetailRequest {
     /** 仓库名称 */
     private String warehouseName;
 
+    private Integer isFresh;
+
+    public Integer getIsFresh() {
+        return isFresh;
+    }
+
+    public void setIsFresh(Integer isFresh) {
+        this.isFresh = isFresh;
+    }
+
     public String getBoxTypeCode() {
         return boxTypeCode;
     }

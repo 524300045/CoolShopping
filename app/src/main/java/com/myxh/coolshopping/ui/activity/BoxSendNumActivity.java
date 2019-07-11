@@ -71,6 +71,8 @@ public class BoxSendNumActivity extends BaseActivity implements View.OnClickList
 
     private  String lineName;
 
+    private Integer isFresh;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,6 +96,8 @@ public class BoxSendNumActivity extends BaseActivity implements View.OnClickList
 
         lineCode=getIntent().getExtras().getString("lineCode");
         lineName=getIntent().getExtras().getString("lineName");
+
+        isFresh=getIntent().getIntExtra("isFresh",0);
 
         tvBoxTypeCode.setText(boxTypeCode);
         tvBoxTypeName.setText(boxTypeName);
@@ -180,7 +184,7 @@ public class BoxSendNumActivity extends BaseActivity implements View.OnClickList
                 request.setUpdateUser(AppConstant.User_Name);
                 request.setLineCode(lineCode);
                 request.setLineName(lineName);
-
+                request.setIsFresh(isFresh);
                 request.setWarehouseCode(AppConstant.WareHouse_Code);
                 request.setWarehouseName(AppConstant.WareHouse_Name);
 

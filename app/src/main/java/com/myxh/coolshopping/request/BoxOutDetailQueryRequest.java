@@ -18,11 +18,21 @@ public class BoxOutDetailQueryRequest {
     /** 门店编码 */
     private String storedCode;
 
+    private Integer isFresh;
+
     /** 每页大小 */
     private int pageSize;
 
     /** 当前页 */
     private int pageIndex;
+
+    public Integer getIsFresh() {
+        return isFresh;
+    }
+
+    public void setIsFresh(Integer isFresh) {
+        this.isFresh = isFresh;
+    }
 
     public int getPageSize() {
         return pageSize;

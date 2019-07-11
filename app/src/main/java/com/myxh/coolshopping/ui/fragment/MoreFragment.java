@@ -56,6 +56,9 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
     private void initView(View view) {
         btnExit=(Button)view.findViewById(R.id.btnExit);
         btnExit.setOnClickListener(this);
+        mItemTvCurrentVersion = (TextView) view.findViewById(R.id.more_item_tv_current_version);
+        mItemContactKefuLayout = (RelativeLayout) view.findViewById(R.id.more_item_contact_kefu_layout);
+        mItemCheckUpdateLayout = (RelativeLayout) view.findViewById(R.id.more_item_check_update_layout);
       /*  mToolbar = (Toolbar) view.findViewById(R.id.more_toolbar);
         mBtnWifiSwitch = (CheckBox) view.findViewById(R.id.more_btn_wifi_switch);
         mBtnNoticeSwitch = (CheckBox) view.findViewById(R.id.more_btn_notice_switch);
@@ -65,9 +68,9 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
         mItemCommentLayout = (RelativeLayout) view.findViewById(R.id.more_item_comment_layout);
         mItemFeedbackLayout = (RelativeLayout) view.findViewById(R.id.more_item_feedback_layout);
         mItemTvKefu = (TextView) view.findViewById(R.id.more_item_tv_kefu);
-        mItemContactKefuLayout = (RelativeLayout) view.findViewById(R.id.more_item_contact_kefu_layout);
-        mItemTvCurrentVersion = (TextView) view.findViewById(R.id.more_item_tv_current_version);
-        mItemCheckUpdateLayout = (RelativeLayout) view.findViewById(R.id.more_item_check_update_layout);
+
+
+
         mItemAboutLayout = (RelativeLayout) view.findViewById(R.id.more_item_about_layout);
 
         mBtnWifiSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -91,11 +94,12 @@ public class MoreFragment extends BaseFragment implements View.OnClickListener {
         mItemCommentLayout.setOnClickListener(this);
         mItemFeedbackLayout.setOnClickListener(this);
         mItemContactKefuLayout.setOnClickListener(this);
-        mItemCheckUpdateLayout.setOnClickListener(this);
+
         mItemAboutLayout.setOnClickListener(this);
 
-        mItemTvCacheSize.setText(DataClearUtil.getTotalCacheSize(getActivity()));
-        mItemTvCurrentVersion.setText(CoolApplication.getAppContext().getAppVersion());*/
+        mItemTvCacheSize.setText(DataClearUtil.getTotalCacheSize(getActivity()));*/
+        mItemCheckUpdateLayout.setOnClickListener(this);
+        mItemTvCurrentVersion.setText(CoolApplication.getAppContext().getAppVersion());
     }
 
     @Override

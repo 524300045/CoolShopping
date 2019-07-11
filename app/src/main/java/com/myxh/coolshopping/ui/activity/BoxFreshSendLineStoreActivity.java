@@ -1,7 +1,6 @@
 package com.myxh.coolshopping.ui.activity;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,11 +13,12 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.myxh.coolshopping.R;
 import com.myxh.coolshopping.common.AppConstant;
-import com.myxh.coolshopping.entity.BoxType;
+import com.myxh.coolshopping.entity.LineStore;
 import com.myxh.coolshopping.network.CallServer;
 import com.myxh.coolshopping.network.HttpListener;
-import com.myxh.coolshopping.request.BoxTypeRequest;
-import com.myxh.coolshopping.response.BoxTypeResponse;
+import com.myxh.coolshopping.request.LineRequest;
+import com.myxh.coolshopping.request.LineStoreRequest;
+import com.myxh.coolshopping.response.LineStoreResponse;
 import com.myxh.coolshopping.ui.base.BaseActivity;
 import com.myxh.coolshopping.util.ToastUtil;
 import com.yolanda.nohttp.NoHttp;
@@ -32,23 +32,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class BoxTypeSendListActivity extends BaseActivity implements View.OnClickListener,HttpListener<String>  {
+public class BoxFreshSendLineStoreActivity extends BaseActivity implements View.OnClickListener,HttpListener<String>  {
 
 
-    private static final int  Box_REQUEST = 0x01; //根据司机获取门店信息what
+    private static final int  LINE_STORE_REQUEST = 0x01; //根据司机获取门店信息what
 
 
     private ImageView mTitleBarIvBack;
 
     private ListView mListView;
 
-    private  String storeCode;
-
-    private  String storeName;
-
-    private  String customerCode;
-
-    private  String customerName;
 
     private  TextView tvTitle;
 
@@ -56,13 +49,17 @@ public class BoxTypeSendListActivity extends BaseActivity implements View.OnClic
 
     private  String lineName;
 
+    private  String customerCode;
+
+    private  String storedCode;
+
     private Integer isFresh;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_box_type_send_list);
+        setContentView(R.layout.activity_box_fresh_send_line_store);
 
         initView();
         initData();
@@ -70,28 +67,29 @@ public class BoxTypeSendListActivity extends BaseActivity implements View.OnClic
 
     private void initData() {
 
-        storeCode=getIntent().getExtras().getString("storedCode");
-        storeName=getIntent().getExtras().getString("storedName");
-        customerCode=getIntent().getExtras().getString("customerCode");
-        customerName=getIntent().getExtras().getString("customerName");
 
-        lineCode=getIntent().getExtras().getString("lineCode");
-        lineName=getIntent().getExtras().getString("lineName");
+       // lineCode=getIntent().getExtras().getString("lineCode");
+      //  lineName=getIntent().getExtras().getString("lineName");
+
+       // tvTitle.setText("发运出库-"+lineName);
 
         isFresh=getIntent().getIntExtra("isFresh",0);
-        tvTitle.setText("发运出库-"+storeName);
+        customerCode=getIntent().getExtras().getString("customerCode");
+        storedCode=getIntent().getExtras().getString("storedCode");
 
-        BoxTypeRequest request=new BoxTypeRequest();
-        request.setCustomerCode(customerCode);
-        request.setStoredCode(storeCode);
+        LineStoreRequest lineStoreRequest=new LineStoreRequest();
+        lineStoreRequest.setCustomerCode(customerCode);
+        lineStoreRequest.setStoredCode(storedCode);
+        lineStoreRequest.setWarehouseCode(AppConstant.WareHouse_Code);
+
         Gson gson = new Gson();
-        String json=gson.toJson(request);
+        String json=gson.toJson(lineStoreRequest);
 
-        Request<String> boxTypeRequest = NoHttp.createStringRequest(AppConstant.BASE_URL+"/boxType/getAllBoxTypeList",RequestMethod.POST);
-        boxTypeRequest.setDefineRequestBodyForJson(json);
+        Request<String> request = NoHttp.createStringRequest(AppConstant.BASE_URL+"/lineStore/getLineStoreByStore",RequestMethod.POST);
+        request.setDefineRequestBodyForJson(json);
 
 
-        CallServer.getInstance().add(BoxTypeSendListActivity.this, Box_REQUEST, boxTypeRequest, this, true, true);
+        CallServer.getInstance().add(BoxFreshSendLineStoreActivity.this, LINE_STORE_REQUEST, request, BoxFreshSendLineStoreActivity.this, true, true);
 
 
     }
@@ -99,7 +97,7 @@ public class BoxTypeSendListActivity extends BaseActivity implements View.OnClic
     private void initView() {
         mTitleBarIvBack = (ImageView) findViewById(R.id.common_titleBar_iv_back);
         mTitleBarIvBack.setOnClickListener(this);
-        mListView = (ListView)findViewById(R.id.box_check_listView);
+        mListView = (ListView)findViewById(R.id.box_recyle_line_listView);
         tvTitle=(TextView) findViewById(R.id.common_titleBar_tv_title);
 
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -107,26 +105,29 @@ public class BoxTypeSendListActivity extends BaseActivity implements View.OnClic
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                     long arg3) {
 
-                //周转筐名称
-                TextView tvBoxTypeCode = (TextView) arg1.findViewById(R.id.tvBoxTypeCode);
-                TextView tvBoxTypeName = (TextView) arg1.findViewById(R.id.tvBoxTypeName);
+                //线路
+                TextView tvLineCode = (TextView) arg1.findViewById(R.id.tvLineCode);
+                TextView tvLineName = (TextView) arg1.findViewById(R.id.tvLineName);
+
+                TextView tvCustomerCode = (TextView) arg1.findViewById(R.id.tvCustomerCode);
+                TextView tvCustomerName= (TextView) arg1.findViewById(R.id.tvCustomerName);
+
+                TextView tvStoreCode = (TextView) arg1.findViewById(R.id.tvStoreCode);
+                TextView tvStoreName = (TextView) arg1.findViewById(R.id.tvStoreName);
+
                 Bundle bundle = new Bundle();
-                bundle.putString("storeCode",storeCode);
-                bundle.putString("storeName",storeName);
-                bundle.putString("boxTypeCode",tvBoxTypeCode.getText().toString());
-                bundle.putString("boxTypeName",tvBoxTypeName.getText().toString());
-                bundle.putString("customerCode",customerCode);
-                bundle.putString("customerName",customerName);
-                bundle.putString("lineCode",lineCode);
-                bundle.putString("lineName",lineName);
+
+                bundle.putString("lineCode",tvLineCode.getText().toString());
+                bundle.putString("lineName",tvLineName.getText().toString());
+                bundle.putString("customerCode",tvCustomerCode.getText().toString());
+                bundle.putString("customerName",tvCustomerName.getText().toString());
+                bundle.putString("storedCode",tvStoreCode.getText().toString());
+                bundle.putString("storedName",tvStoreName.getText().toString());
                 bundle.putInt("isFresh",isFresh);
 
-                openActivity(BoxSendListActivity.class,bundle);
+                openActivity(BoxTypeSendListActivity.class,bundle);
 
-               /* Intent intent=new Intent();
-                intent.setClass(BoxTypeSendListActivity.this, BoxSendListActivity.class);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, 1);*/
+
             }
         });
     }
@@ -146,33 +147,36 @@ public class BoxTypeSendListActivity extends BaseActivity implements View.OnClic
     public void onSucceed(int what, Response<String> response) {
         Gson gson = new Gson();
         switch (what) {
-            case  Box_REQUEST:
-                BoxTypeResponse boxTypeResponse=gson.fromJson(response.get(),BoxTypeResponse.class);
-                if (boxTypeResponse!=null&&boxTypeResponse.getCode().equals("200"))
+            case  LINE_STORE_REQUEST:
+                LineStoreResponse lineStoreResponse=gson.fromJson(response.get(),LineStoreResponse.class);
+                if (lineStoreResponse!=null&&lineStoreResponse.getCode().equals("200"))
                 {
                     List<Map<String, Object>> mapList = new ArrayList<Map<String, Object>>();
-                    if (boxTypeResponse.getResult()!=null&&boxTypeResponse.getResult().size()>0)
+                    if (lineStoreResponse.getResult()!=null&&lineStoreResponse.getResult().size()>0)
                     {
-                        for (BoxType boxType:boxTypeResponse.getResult())
+                        for (LineStore lineStore:lineStoreResponse.getResult())
                         {
                             Map<String, Object> map = new HashMap<String, Object>();
-                            map.put("boxTypeCode",boxType.getBoxTypeCode());
-                            map.put("boxTypeName",boxType.getBoxTypeName());
-                            map.put("remark","颜色:"+boxType.getColor()+",规格:"+boxType.getBoxLength()+"X"+boxType.getBoxWidth().toString()+"X"+boxType.getBoxHigh());
+                            map.put("lineCode",lineStore.getLineCode());
+                            map.put("lineName",lineStore.getLineName());
+                            map.put("customerCode",lineStore.getCustomerCode());
+                            map.put("customerName",lineStore.getCustomerName());
+                            map.put("storedCode",lineStore.getStoredCode());
+                            map.put("storedName",lineStore.getStoredName());
 
                             mapList.add(map);
                         }
                     }
 
                     SpecialAdapter adp = new SpecialAdapter(this, mapList,
-                            R.layout.item_box_type_send, new String[] {"boxTypeCode", "boxTypeName", "remark" ,},
-                            new int[] {R.id.tvBoxTypeCode, R.id.tvBoxTypeName, R.id.tvRemark});
+                            R.layout.item_box_send_line_store, new String[] {"lineCode", "lineName","customerCode","customerName","storedCode","storedName"},
+                            new int[] {R.id.tvLineCode, R.id.tvLineName,R.id.tvCustomerCode, R.id.tvCustomerName,R.id.tvStoreCode, R.id.tvStoreName});
                     mListView.setAdapter(adp);
 
                 }
                 else
                 {
-                    ToastUtil.show(BoxTypeSendListActivity.this,"获取周转筐信息失败");
+                    ToastUtil.show(BoxFreshSendLineStoreActivity.this,"获取线路门店失败");
                 }
                 break;
         }
