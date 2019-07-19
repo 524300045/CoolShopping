@@ -28,6 +28,16 @@ public class BoxType {
 
     private String unit;
 
+    public BigDecimal remainNum;
+
+    public BigDecimal getRemainNum() {
+        return remainNum;
+    }
+
+    public void setRemainNum(BigDecimal remainNum) {
+        this.remainNum = remainNum;
+    }
+
     public BigDecimal getCheckNum() {
         return checkNum;
     }

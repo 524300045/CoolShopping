@@ -13,6 +13,15 @@ public class BoxTypeRequest {
     /** 门店编码 */
     private String storedName;
 
+    private String warehouseCode;
+
+    public String getWarehouseCode() {
+        return warehouseCode;
+    }
+
+    public void setWarehouseCode(String warehouseCode) {
+        this.warehouseCode = warehouseCode;
+    }
 
     public String getCustomerCode() {
         return customerCode;

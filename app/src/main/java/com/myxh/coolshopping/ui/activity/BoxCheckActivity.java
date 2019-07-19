@@ -78,10 +78,11 @@ public class BoxCheckActivity extends BaseActivity implements View.OnClickListen
         BoxTypeRequest request=new BoxTypeRequest();
         request.setCustomerCode(customerCode);
         request.setStoredCode(storeCode);
+        request.setWarehouseCode(AppConstant.WareHouse_Code);
         Gson gson = new Gson();
         String json=gson.toJson(request);
 
-        Request<String> boxTypeRequest = NoHttp.createStringRequest(AppConstant.BASE_URL+"/boxType/getAllBoxType",RequestMethod.POST);
+        Request<String> boxTypeRequest = NoHttp.createStringRequest(AppConstant.BASE_URL+"/boxType/getAllStoreBoxType",RequestMethod.POST);
         boxTypeRequest.setDefineRequestBodyForJson(json);
 
 
@@ -128,10 +129,11 @@ public class BoxCheckActivity extends BaseActivity implements View.OnClickListen
             BoxTypeRequest request=new BoxTypeRequest();
             request.setCustomerCode(customerCode);
             request.setStoredCode(storeCode);
+            request.setWarehouseCode(AppConstant.WareHouse_Code);
             Gson gson = new Gson();
             String json=gson.toJson(request);
 
-            Request<String> boxTypeRequest = NoHttp.createStringRequest(AppConstant.BASE_URL+"/boxType/getAllBoxType",RequestMethod.POST);
+            Request<String> boxTypeRequest = NoHttp.createStringRequest(AppConstant.BASE_URL+"/boxType/getAllStoreBoxType",RequestMethod.POST);
             boxTypeRequest.setDefineRequestBodyForJson(json);
 
 
@@ -166,13 +168,14 @@ public class BoxCheckActivity extends BaseActivity implements View.OnClickListen
                             map.put("boxTypeName",boxType.getBoxTypeName());
                             map.put("remark","颜色:"+boxType.getColor()+",规格:"+boxType.getBoxLength()+"X"+boxType.getBoxWidth().toString()+"X"+boxType.getBoxHigh());
                             map.put("checkNum",boxType.getCheckNum());
+                            map.put("remainStock",boxType.getRemainNum());
                             mapList.add(map);
                         }
                     }
 
                     SpecialAdapter adp = new SpecialAdapter(this, mapList,
-                            R.layout.item_box_check, new String[] {"boxTypeCode", "boxTypeName", "remark" ,"checkNum"},
-                            new int[] {R.id.tvBoxTypeCode, R.id.tvBoxTypeName, R.id.tvRemark,R.id.tvNum});
+                            R.layout.item_box_check, new String[] {"boxTypeCode", "boxTypeName", "remark" ,"checkNum","remainStock"},
+                            new int[] {R.id.tvBoxTypeCode, R.id.tvBoxTypeName, R.id.tvRemark,R.id.tvNum,R.id.tvRemainStock});
                     mListView.setAdapter(adp);
 
                 }

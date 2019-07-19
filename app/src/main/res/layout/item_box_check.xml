@@ -67,6 +67,26 @@
             android:gravity="left"
             android:id="@+id/tvNum"/>
 
+
+        <TextView
+            android:layout_marginLeft="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvRemainStockDes"
+            android:layout_toRightOf="@+id/tvNum"
+            android:text="滞留数量"
+            />
+        <TextView
+            android:layout_marginLeft="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tvRemainStockDes"
+            android:text="0"
+            android:textSize="@dimen/textSize_17"
+            android:textColor="@color/app_yellow"
+            android:gravity="left"
+            android:id="@+id/tvRemainStock"/>
+
     </RelativeLayout>
 
 

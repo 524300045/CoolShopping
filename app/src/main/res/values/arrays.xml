@@ -40,7 +40,7 @@
 
     <array name="box_home_bar_code">
 
-        <item>boxsend</item>
+        <!--<item>boxsend</item>-->
         <item>boxcheck</item>
         <item>boxrecyle</item>
         <item>boxfreshsend</item>
@@ -49,7 +49,7 @@
 
     <array name="box_home_bar_labels">
 
-        <item>发运出库</item>
+     <!--   <item>发运出库</item>-->
         <item>门店清点</item>
         <item>回收入库</item>
         <item>生鲜发运</item>
@@ -58,7 +58,7 @@
     </array>
 
     <array name="box_home_bar_icon">
-        <item>@mipmap/icon_home_food_99</item>
+     <!--   <item>@mipmap/icon_home_food_99</item>-->
          <item>@mipmap/icon_home_movie_29</item>
          <item>@mipmap/icon_home_hotel_300</item>
         <item>@mipmap/icon_home_93</item>

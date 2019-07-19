@@ -1,6 +1,14 @@
 package com.myxh.coolshopping.ui.activity;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,6 +38,8 @@ import com.mob.tools.utils.UIHandler;
 import com.myxh.coolshopping.R;
 import com.myxh.coolshopping.common.AppConstant;
 import com.myxh.coolshopping.common.BmobManager;
+import com.myxh.coolshopping.common.DownLoadManager;
+import com.myxh.coolshopping.entity.VersionInfo;
 import com.myxh.coolshopping.entity.WareHouse;
 import com.myxh.coolshopping.listener.BmobLoginCallback;
 import com.myxh.coolshopping.listener.BmobMsgSendCallback;
@@ -38,11 +48,14 @@ import com.myxh.coolshopping.network.CallServer;
 import com.myxh.coolshopping.network.HttpListener;
 import com.myxh.coolshopping.network.HttpResponseListener;
 import com.myxh.coolshopping.request.LoginRequest;
+import com.myxh.coolshopping.request.VersionInfoRequest;
 import com.myxh.coolshopping.request.WareRequest;
 import com.myxh.coolshopping.response.UserResponse;
+import com.myxh.coolshopping.response.VersionResponse;
 import com.myxh.coolshopping.response.WareResponse;
 import com.myxh.coolshopping.ui.base.BaseActivity;
 import com.myxh.coolshopping.ui.fragment.HomeFragment;
+import com.myxh.coolshopping.util.ApkVersionCodeUtils;
 import com.myxh.coolshopping.util.LoginHelperUtil;
 import com.myxh.coolshopping.util.ToastUtil;
 import com.yolanda.nohttp.Logger;
@@ -51,6 +64,7 @@ import com.yolanda.nohttp.RequestMethod;
 import com.yolanda.nohttp.rest.Request;
 import com.yolanda.nohttp.rest.Response;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -152,6 +166,31 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                     }
                 });
                 break;
+            case 3:
+                VersionResponse versionResponse = gson.fromJson(response.get(),VersionResponse.class);
+                if(versionResponse!=null&&versionResponse.getCode().equals("200"))
+                {
+
+                    VersionInfo versionInfo=versionResponse.getResult();
+                    if (versionInfo!=null)
+                    {
+                        if (!versionInfo.getVersionCode().equals(ApkVersionCodeUtils.getVerName(getApplicationContext()))) {
+                            if (!versionInfo.getUrl().equals(""))
+                            {
+                                //下载升级包
+                                //downLoadApk(versionInfo.getUrl());
+                                showUpdataDialog(versionInfo.getUrl());
+                            }
+
+
+                        }
+                    }
+                }
+                else
+                {
+                    ToastUtil.show(LoginActivity.this,"获取版本信息失败");
+                }
+                break;
 
         };
 
@@ -221,10 +260,27 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     private Handler mHandler;
 
+    private  TextView tvVersionName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            int REQUEST_CODE_PERMISSION_STORAGE = 100;
+            String[] permissions = {
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE
+            };
+
+            for (String str : permissions) {
+                if (this.checkSelfPermission(str) != PackageManager.PERMISSION_GRANTED) {
+                    this.requestPermissions(permissions, REQUEST_CODE_PERMISSION_STORAGE);
+                    return;
+                }
+            }
+        }
         initView();
         initData();
         initAnimation();
@@ -234,18 +290,91 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         mHandler = new Handler(this);
     }
 
+    protected void downLoadApk(final String url) {
+        final ProgressDialog pd; // 进度条对话框
+        pd = new ProgressDialog(this);
+        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        pd.setMessage("正在下载更新");
+        pd.show();
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    File file = DownLoadManager.getFileFromServer(
+                            url, pd);
+                    sleep(3000);
+                    installApk(file);
+                    pd.dismiss(); // 结束掉进度条对话框
+                } catch (Exception e) {
+
+
+                    pd.dismiss(); // 结束掉进度条对话框
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+    }
+
+    // 安装apk
+    protected void installApk(File file) {
+        Intent intent = new Intent();
+        // 执行动作
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setDataAndType(Uri.parse("file://" + file.getAbsolutePath()),
+                "application/vnd.android.package-archive");
+
+        // 执行的数据类型
+        intent.setDataAndType(Uri.fromFile(file),
+                "application/vnd.android.package-archive");
+        startActivity(intent);
+    }
+
+    protected void showUpdataDialog(final String url) {
+        AlertDialog.Builder builer = new AlertDialog.Builder(LoginActivity.this);
+        builer.setTitle("版本升级");
+        builer.setMessage("发现新版本,请升级");
+        // 当点确定按钮时从服务器上下载 新的apk 然后安装
+        builer.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface arg0, int arg1) {
+                // TODO Auto-generated method stub
+                downLoadApk(url);
+            }
+        });
+
+        // 当点取消按钮时进行登录
+		/*builer.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				// LoginMain();
+			}
+		});*/
+        builer.setCancelable(false);
+
+
+        AlertDialog dialog = builer.create();
+        dialog.show();
+    }
+
     private  void  initData()
     {
         WareRequest request=new WareRequest();
         Gson gson = new Gson();
         String json=gson.toJson(request);
-
         Request<String> wareRequest = NoHttp.createStringRequest(AppConstant.BASE_URL+"warehouseInfo/getAllWarehouse",RequestMethod.POST);
         wareRequest.setDefineRequestBodyForJson(json);
-
         CallServer.getInstance().add(LoginActivity.this, 2, wareRequest, this, true, true);
 
+        VersionInfoRequest versionInfoRequest=new VersionInfoRequest();
+        versionInfoRequest.setSystemCode("4");
+        String versionJson=gson.toJson(versionInfoRequest);
+        Request<String> versionRequest = NoHttp.createStringRequest(AppConstant.BASE_URL+"versionInfo/getVersionInfoByCode",RequestMethod.POST);
+        versionRequest.setDefineRequestBodyForJson(versionJson);
+        CallServer.getInstance().add(LoginActivity.this, 3, versionRequest, this, true, true);
 
+
+         String versionName=ApkVersionCodeUtils.getVerName(getApplicationContext());
+        tvVersionName.setText("Version "+versionName);
     }
 
     private void setViewListener() {
@@ -408,6 +537,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         mBottomIvWechat = (ImageView) findViewById(R.id.login_bottom_iv_wechat);
         mBottomIvWeibo = (ImageView) findViewById(R.id.login_bottom_iv_weibo);
         mBottomIvAlipay = (ImageView) findViewById(R.id.login_bottom_iv_alipay);*/
+        tvVersionName=(TextView) findViewById(R.id.tvVersionName);
     }
 
     @Override
