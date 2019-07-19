@@ -5,13 +5,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.myxh.coolshopping.ui.activity.DetailActivity">
+    tools:context="com.myxh.tms.ui.activity.DetailActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/detail_layout_buy">
-        <com.myxh.coolshopping.ui.widget.ObserverScrollView
+        <com.myxh.tms.ui.widget.ObserverScrollView
             android:id="@+id/detail_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -203,7 +203,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
             </LinearLayout>
-        </com.myxh.coolshopping.ui.widget.ObserverScrollView>
+        </com.myxh.tms.ui.widget.ObserverScrollView>
         <LinearLayout
             android:id="@+id/detail_title_layout"
             android:layout_width="match_parent"

@@ -52,7 +52,7 @@
             android:text="@string/not_find_city"
             android:visibility="gone"/>
 
-        <com.myxh.coolshopping.ui.widget.SidebarView
+        <com.myxh.tms.ui.widget.SidebarView
             android:id="@+id/city_sidebar"
             android:layout_width="25dp"
             android:layout_height="match_parent"

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/bg_common_gray"
-    tools:context="com.myxh.coolshopping.ui.activity.RegisterActivity">
+    tools:context="com.myxh.tms.ui.activity.RegisterActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"

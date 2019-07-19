@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.myxh.coolshopping.ui.activity.LocationActivity">
+    tools:context="com.myxh.tms.ui.activity.LocationActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

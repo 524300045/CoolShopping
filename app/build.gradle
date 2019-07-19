@@ -8,7 +8,7 @@ android {
     useLibrary 'org.apache.http.legacy'
 
     defaultConfig {
-        applicationId "com.myxh.coolshopping"
+        applicationId "com.myxh.tms"
         minSdkVersion 17
         targetSdkVersion 24
         versionCode 1
