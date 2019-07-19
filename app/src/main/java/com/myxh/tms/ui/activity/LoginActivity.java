@@ -265,7 +265,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             for (String str : permissions) {
                 if (this.checkSelfPermission(str) != PackageManager.PERMISSION_GRANTED) {
                     this.requestPermissions(permissions, REQUEST_CODE_PERMISSION_STORAGE);
-                    return;
+                    break;
                 }
             }
         }
@@ -613,7 +613,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
                 String password = mAccountLoginEtPassword.getText().toString();
                 if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(password)) {
 
-                    String searchUrl = "http://test.api.portal.bjshengeng.com/services/user/checkAndGetUserResource";
+                    String searchUrl =AppConstant.BASE_URL_LOGIN;
 
                     LoginRequest request = new LoginRequest();
                     request.setName(username);

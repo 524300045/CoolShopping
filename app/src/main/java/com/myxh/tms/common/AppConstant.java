@@ -29,11 +29,16 @@ public class AppConstant {
      */
  /*   public static  String BASE_URL = "http://test.api.vcps.bjshengeng.com/services/";
 
-    public static  String BASE_URL_PORTAL = "http://test.api.portal.bjshengeng.com/services";*/
+    public static  String BASE_URL_PORTAL = "http://test.api.portal.bjshengeng.com/services";
+
+    public static  String BASE_URL_LOGIN = "http://test.api.portal.bjshengeng.com/services/user/checkAndGetUserResource";
+    */
 
     public static  String BASE_URL = "http://pre.api.cooperate.bjkalf.net/services/";
 
-    public static  String BASE_URL_PORTAL = "http://www.bjkalf.net:8090/services/user/checkAndGetUserResource";
+    public static  String BASE_URL_PORTAL = "http://www.bjkalf.net:8090/services";
+
+    public static  String BASE_URL_LOGIN = "http://www.bjkalf.net:8090/services/user/checkAndGetUserResource";
 
 
     /**
