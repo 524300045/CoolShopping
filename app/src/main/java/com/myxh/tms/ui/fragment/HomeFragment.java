@@ -126,7 +126,7 @@ public class HomeFragment extends BaseFragment implements HttpListener<String> {
         userDriverRequest.setDefineRequestBodyForJson(json);
 
 
-      //  CallServer.getInstance().add(getActivity(), USER_DRIVER_REQUEST, userDriverRequest, this, true, true);
+       CallServer.getInstance().add(getActivity(), USER_DRIVER_REQUEST, userDriverRequest, this, true, true);
     }
 
     private void antoScroll() {
